@@ -25,8 +25,8 @@ void main() {
 
   print(list.toString());
 
-  list.deleteItem(deleteID: 5);
-  list.deleteItem(deleteID: 10);
+  list.deleteItem(deleteID: 4);
+  // list.deleteItem(deleteID: 10);
   print('\n======================\n');
   print(list.toString());
 }
