@@ -28,18 +28,23 @@ class Folder extends ListItem {
   }
 
   @override
-  void deleteItem({int deleteID}) {
+  bool deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
+      print('${children[i].id}');
       // delete ID found & is folder
       if (children[i].id == deleteID) {
         children.removeAt(i);
+        // update status of children due to deleton
+        hasChildren = children.length != 0 ? true : false;
+        // deleted, so signal up to list to stop search
+        return true;
       } else if (children[i].isFolder) {
-        children[i].deleteItem(deleteID: deleteID);
+        // if deleted, signal up to list to stop search
+        return children[i].deleteItem(deleteID: deleteID);
       }
     }
 
-    // update status of children
-    hasChildren = children.length != 0 ? true : false;
+    return false;
   }
 
   void deleteCascade({int deleteID}) {

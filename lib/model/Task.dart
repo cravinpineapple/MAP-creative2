@@ -15,7 +15,9 @@ class Task extends ListItem {
   void createItem({bool isFolder, String name}) {}
 
   @override
-  void deleteItem({int deleteID}) {}
+  bool deleteItem({int deleteID}) {
+    return false;
+  }
 
   @override
   String toListString(int tabLength) {

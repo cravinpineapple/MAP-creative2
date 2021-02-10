@@ -21,10 +21,15 @@ class ToDoList {
 
   void deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
+      print('${children[i].id}');
+
       if (children[i].id == deleteID) {
         children.removeAt(i);
+        // successful delete, stop searching
+        return;
       } else if (children[i].isFolder) {
-        children[i].deleteItem(deleteID: deleteID);
+        // if deleted (returns true), we stop searching
+        if (children[i].deleteItem(deleteID: deleteID)) return;
       }
     }
   }
