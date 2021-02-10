@@ -30,12 +30,8 @@ class Folder extends ListItem {
   @override
   void deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
-      print('${children[i].id} | isFolder: ${children[i].isFolder}');
-
       // delete ID found & is folder
       if (children[i].id == deleteID) {
-        //&& children[i].isFolder) {
-        //deleteCascade(deleteID: deleteID);
         children.removeAt(i);
       } else if (children[i].isFolder) {
         children[i].deleteItem(deleteID: deleteID);

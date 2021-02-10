@@ -21,8 +21,6 @@ class ToDoList {
 
   void deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
-      print('${children[i].id} | isFolder: ${children[i].isFolder}');
-
       if (children[i].id == deleteID) {
         children.removeAt(i);
       } else if (children[i].isFolder) {
