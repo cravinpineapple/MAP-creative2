@@ -5,10 +5,10 @@ class Task extends ListItem {
   bool isCompleted;
   String name;
 
-  Task({this.name}) {
+  Task({this.name, int id}) {
     this.isFolder = false;
     children = null;
-    id = ++ToDoList.idCount;
+    this.id = id;
   }
 
   @override

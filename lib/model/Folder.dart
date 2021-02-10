@@ -7,11 +7,11 @@ class Folder extends ListItem {
   String name;
   bool hasChildren;
 
-  Folder({this.name}) {
+  Folder({this.name, int id}) {
     this.isFolder = true;
     children = [];
     isOpen = false;
-    id = ++ToDoList.idCount;
+    this.id = id;
     hasChildren = false;
   }
 
