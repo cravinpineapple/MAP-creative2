@@ -6,11 +6,24 @@ void main() {
 }
 
 class Creative2App extends StatelessWidget {
+  static bool lightMode = true;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Text('Creative2App'),
       title: 'Creative Assignment 2',
+      theme: ThemeData(
+        brightness: lightMode ? Brightness.light : Brightness.dark,
+        // primaryColor: Colors.grey[700],
+        textTheme: TextTheme(
+          headline1: TextStyle(
+            fontSize: 28.0,
+            color: Colors.white,
+            // fontFamily: 'Roboto',
+          ),
+        ),
+      ),
       initialRoute: ToDoScreen.routeName,
       routes: {
         ToDoScreen.routeName: (context) => ToDoScreen(),
