@@ -39,13 +39,16 @@ class _ToDoState extends State<ToDoScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Panel(
-              isFolder: false,
-              name: 'Task 1',
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+          child: Column(
+            children: [
+              Panel(
+                isFolder: false,
+                name: 'test',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -74,37 +77,80 @@ class Panel extends StatefulWidget {
 
 class _PanelState extends State<Panel> {
   ListItem item;
+  final GlobalKey _panelKey = GlobalKey();
+  double screenWidth;
+  Color panelColor;
+  Color textColor;
+  bool checkedValue = false;
 
   @override
   void initState() {
     super.initState();
-    item = Folder(name: 'Task 1', id: 0);
+    item = Task(name: 'Task 1', id: 0);
     item.isExpanded = true;
+    // WidgetsBinding.instance.addPostFrameCallback((_) => getPosition());
   }
+
+  // Offset panelPosition;
+  // gets position of widget AFTER render
+  // getPosition() {
+  //   RenderBox _panelBox = _panelKey.currentContext.findRenderObject();
+  //   panelPosition = _panelBox.localToGlobal(Offset.zero);
+  // }
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    panelColor = item.isFolder ? Colors.grey[600] : Colors.grey[400];
+    textColor = item.isFolder ? Colors.white : Colors.grey[800];
+
     return Container(
-      width: 300.0,
+      key: _panelKey,
+      width: screenWidth,
       height: 50.0,
       decoration: BoxDecoration(
-        color: Colors.grey[600],
+        color: panelColor,
         borderRadius: BorderRadius.circular(7.0),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 15.0,
+            width: item.isFolder ? 15.0 : 5.0,
           ),
+          // Display checkbox if task
+          !item.isFolder
+              ? Expanded(
+                  flex: 4,
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: Checkbox(
+                      onChanged: (bool value) {
+                        setState(() {
+                          checkedValue = value;
+                        });
+                      },
+                      value: checkedValue,
+                      checkColor: Colors.grey[800],
+                      activeColor: panelColor,
+                    ),
+                  ),
+                )
+              : SizedBox(),
+          // Displaying item text
           Expanded(
             flex: 20,
             child: Text(
               widget.name,
-              style: Theme.of(context).textTheme.headline1,
+              style: TextStyle(
+                fontSize: 28.0,
+                fontFamily: 'Roboto',
+                color: textColor,
+              ),
             ),
           ),
+          // if item is folder display add icon
           Expanded(
-            flex: 4,
+            flex: 3,
             child: item.isFolder
                 ? IconButton(
                     icon: Icon(
@@ -116,6 +162,7 @@ class _PanelState extends State<Panel> {
                   )
                 : SizedBox(),
           ),
+          // if item is folder display drop down icon
           Expanded(
             flex: 2,
             child: item.isFolder
@@ -146,7 +193,7 @@ class _PanelState extends State<Panel> {
                 : SizedBox(),
           ),
           SizedBox(
-            width: 30.0,
+            width: 20.0,
           )
         ],
       ),
