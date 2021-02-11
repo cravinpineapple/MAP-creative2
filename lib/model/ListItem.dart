@@ -1,5 +1,6 @@
 abstract class ListItem {
   bool isFolder;
+  bool isExpanded;
   List<ListItem> children = [];
   int id;
 

@@ -13,6 +13,7 @@ class Folder extends ListItem {
     isOpen = false;
     this.id = id;
     hasChildren = false;
+    isExpanded = false;
   }
 
   @override
