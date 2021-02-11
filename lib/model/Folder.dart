@@ -16,15 +16,27 @@ class Folder extends ListItem {
   }
 
   @override
-  void createItem({bool isFolder, String name}) {
-    // adds either folder or task into the children
-    if (isFolder) {
-      children.add(new Folder(name: name));
-    } else {
-      children.add(new Task(name: name));
+  void addItem({bool isFolder, String name, int addID, int newID}) {
+    hasChildren = true;
+
+    // if adding to root
+    if (this.id == addID) {
+      if (isFolder) {
+        children.add(new Folder(name: name, id: newID));
+      } else {
+        children.add(new Task(name: name, id: newID));
+      }
+
+      return;
+      // true;
     }
 
-    hasChildren = true;
+    // if adding to sub-root
+    for (int i = 0; i < children.length; i++) {
+      if (children[i].isFolder) {
+        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: newID);
+      }
+    }
   }
 
   @override

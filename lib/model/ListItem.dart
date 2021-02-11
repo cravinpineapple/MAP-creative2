@@ -8,6 +8,6 @@ abstract class ListItem {
   });
 
   bool deleteItem({int deleteID});
-  void createItem({bool isFolder, String name});
+  void addItem({bool isFolder, String name, int addID, int newID});
   String toListString(int tabLength);
 }
