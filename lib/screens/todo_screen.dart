@@ -111,6 +111,13 @@ class _PanelState extends State<Panel> {
       decoration: BoxDecoration(
         color: panelColor,
         borderRadius: BorderRadius.circular(7.0),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(5.0, 5.0),
+            blurRadius: 2.0,
+            color: Colors.grey[600],
+          ),
+        ],
       ),
       child: Row(
         children: [
