@@ -1,3 +1,4 @@
+import 'package:creative2/screens/login_screen.dart';
 import 'package:creative2/screens/todo_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +25,10 @@ class Creative2App extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: ToDoScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
         ToDoScreen.routeName: (context) => ToDoScreen(),
+        LoginScreen.routeName: (context) => LoginScreen(),
       },
     );
   }
