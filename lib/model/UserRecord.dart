@@ -1,15 +1,22 @@
 import 'package:creative2/model/ToDoList.dart';
 
 class UserRecord {
-  String name;
+  String firstName;
+  String lastName;
   String email;
   String password;
-  List<ToDoList> toDoLists = new List<ToDoList>();
+  List<ToDoList> toDoLists;
 
-  UserRecord({this.name, this.email, this.password});
+  UserRecord(
+      {this.firstName,
+      this.lastName,
+      this.email,
+      this.password,
+      this.toDoLists});
 
   UserRecord.clone({UserRecord userRecord}) {
-    this.name = userRecord.name;
+    this.firstName = userRecord.firstName;
+    this.lastName = userRecord.lastName;
     this.email = userRecord.email;
     this.password = userRecord.password;
 
@@ -30,17 +37,25 @@ class UserRecord {
 
   static List<UserRecord> fakeDB = [
     UserRecord(
-      name: 'Eren',
+      firstName: 'Eren',
+      lastName: 'Jaeger',
       email: '1@test.com',
       password: '111111',
+      toDoLists: [
+        ToDoList(name: 'Test'),
+        ToDoList(name: 'Titans Killed'),
+        ToDoList(name: 'Test 2'),
+      ],
     ),
     UserRecord(
-      name: 'Mikasa',
+      firstName: 'Mikasa',
+      lastName: 'Ackerman',
       email: '2@test.com',
       password: '222222',
     ),
     UserRecord(
-      name: 'Armin',
+      firstName: 'Armin',
+      lastName: 'Arlert',
       email: '3@test.com',
       password: '333333',
     ),
