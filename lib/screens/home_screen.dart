@@ -1,4 +1,5 @@
 import 'package:creative2/model/UserRecord.dart';
+import 'package:creative2/screens/todo_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     userRecord = ModalRoute.of(context).settings.arguments;
+    userRecord.buildTestList();
     List<Widget> builtList = con.buildList();
 
     return Scaffold(
@@ -89,7 +91,11 @@ class _Controller {
                       width: 5.0,
                     )),
                 color: Colors.grey[300],
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(
+                  state.context,
+                  ToDoScreen.routeName,
+                  arguments: e, // passing in the to do list
+                ),
                 child: Text(
                   e.name,
                   style: TextStyle(fontSize: 40.0),
