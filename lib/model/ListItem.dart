@@ -1,6 +1,7 @@
 abstract class ListItem {
   bool isFolder;
   bool isExpanded;
+  String name;
   List<ListItem> children = [];
   int id;
 
