@@ -35,6 +35,55 @@ class UserRecord {
     toDoLists.removeWhere((e) => e.id == removeID);
   }
 
+  // ** temp
+  void builtTestList() {
+    if (toDoLists.isEmpty) return;
+
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Folder 1', isFolder: true, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 1', isFolder: false, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 2', isFolder: false, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Folder 2', isFolder: true, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Folder 2-1', isFolder: true, addID: 4);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 2-1-1', isFolder: false, addID: 5);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 2-1-2', isFolder: false, addID: 5);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 2-1-3', isFolder: false, addID: 5);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Folder 2-2', isFolder: true, addID: 4);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Folder 2-2-1', isFolder: true, addID: 9);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 2-2-1-1', isFolder: false, addID: 10);
+
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 3', isFolder: false, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 4', isFolder: false, addID: 0);
+    toDoLists
+        .firstWhere((e) => e.id == 0)
+        .addItem(name: 'Task 5', isFolder: false, addID: 0);
+  }
+
   static List<UserRecord> fakeDB = [
     UserRecord(
       firstName: 'Eren',
