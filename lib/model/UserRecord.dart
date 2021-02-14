@@ -36,7 +36,7 @@ class UserRecord {
   }
 
   // ** temp
-  void builtTestList() {
+  void buildTestList() {
     if (toDoLists.isEmpty) return;
 
     toDoLists
