@@ -29,7 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     userRecord = ModalRoute.of(context).settings.arguments;
-    userRecord.buildTestList();
+
+    if (userRecord.toDoLists.isEmpty)
+      userRecord.toDoLists.add(userRecord.buildTestList());
+
     List<Widget> builtList = con.buildList();
 
     return Scaffold(
