@@ -1,6 +1,4 @@
-import 'package:creative2/model/Folder.dart';
 import 'package:creative2/model/ListItem.dart';
-import 'package:creative2/model/Task.dart';
 import 'package:creative2/model/ToDoList.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -32,7 +30,6 @@ class _ToDoState extends State<ToDoScreen> {
   Widget build(BuildContext context) {
     userList = ModalRoute.of(context).settings.arguments;
     List builtHierarchy = con.buildListHierarchy(userList.children, 10.0);
-    print(builtHierarchy);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,11 +61,16 @@ class _ToDoController {
     return children
         .map(
           (e) => !e.isFolder
-              ? Panel(
-                  isFolder: e.isFolder,
-                  item: e,
-                  name: e.name,
-                  indent: currentIndent,
+              // placed within row to adjust for slight pixel offset of folder rows
+              ? Row(
+                  children: [
+                    Panel(
+                      isFolder: e.isFolder,
+                      item: e,
+                      name: e.name,
+                      indent: currentIndent,
+                    ),
+                  ],
                 )
               : // if folder
               // create row with indentation and column with information
@@ -89,7 +91,7 @@ class _ToDoController {
                         ),
                         Column(
                           children: buildListHierarchy(
-                              e.children, currentIndent + 30),
+                              e.children, currentIndent + 30.0),
                         )
                       ],
                     ),
@@ -153,13 +155,13 @@ class _PanelState extends State<Panel> {
         decoration: BoxDecoration(
           color: panelColor,
           borderRadius: BorderRadius.circular(7.0),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(5.0, 5.0),
-              blurRadius: 2.0,
-              color: Colors.grey[600],
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     offset: Offset(5.0, 5.0),
+          //     blurRadius: 2.0,
+          //     color: Colors.grey[600],
+          //   ),
+          // ],
         ),
         child: Row(
           children: [
