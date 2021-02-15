@@ -35,7 +35,8 @@ class Folder extends ListItem {
     // if adding to sub-root
     for (int i = 0; i < children.length; i++) {
       if (children[i].isFolder) {
-        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: newID);
+        children[i].addItem(
+            isFolder: isFolder, name: name, addID: addID, newID: newID);
       }
     }
   }
@@ -66,7 +67,7 @@ class Folder extends ListItem {
 
   String toListString(int tabLength) {
     String tab = '\t';
-    String str = (tab * tabLength) + '$name [id = $id]\n';
+    String str = (tab * tabLength) + '$name [id = $id, exp = $isExpanded]\n';
 
     for (int i = 0; i < children.length; i++) {
       str += children[i].toListString(tabLength + 1);
