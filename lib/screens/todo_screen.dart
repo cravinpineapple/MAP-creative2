@@ -29,7 +29,7 @@ class _ToDoState extends State<ToDoScreen> {
   @override
   Widget build(BuildContext context) {
     userList = ModalRoute.of(context).settings.arguments;
-    List builtHierarchy = con.buildListHierarchy(userList.children, 10.0);
+    List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -56,43 +56,42 @@ class _ToDoController {
 
   _ToDoController(this.state);
 
-  List buildListHierarchy(List<ListItem> children, double currentIndent) {
+  List buildListHierarchy(List<ListItem> children, int indentCount) {
     // iterate through to do list items
     return children
         .map(
           (e) => !e.isFolder
               // placed within row to adjust for slight pixel offset of folder rows
-              ? Row(
-                  children: [
-                    Panel(
-                      isFolder: e.isFolder,
-                      item: e,
-                      name: e.name,
-                      indent: currentIndent,
-                    ),
-                  ],
+              ? Panel(
+                  isFolder: e.isFolder,
+                  item: e,
+                  toDoCon: this,
+                  name: e.name,
+                  indentCount:
+                      state.userList.children.contains(e) ? 0 : indentCount,
                 )
               : // if folder
+              //  check if expanded & render accordingly
               // create row with indentation and column with information
               Row(
                   children: [
-                    SizedBox(
-                        width:
-                            state.userList.children.contains(e) ? 0.0 : 30.0),
                     Column(
                       children: [
                         Panel(
                           isFolder: e.isFolder,
                           item: e,
                           name: e.name,
-                          indent: state.userList.children.contains(e)
-                              ? 10.0
-                              : currentIndent,
+                          toDoCon: this,
+                          indentCount: state.userList.children.contains(e)
+                              ? 0
+                              : indentCount,
                         ),
-                        Column(
-                          children: buildListHierarchy(
-                              e.children, currentIndent + 30.0),
-                        )
+                        e.isExpanded
+                            ? Column(
+                                children: buildListHierarchy(
+                                    e.children, indentCount + 1),
+                              )
+                            : SizedBox(height: 0.0, width: 0.0),
                       ],
                     ),
                   ],
@@ -101,6 +100,15 @@ class _ToDoController {
         .toList();
   } // buildListHierarchy
 
+  void toggleExpanded(ListItem item) {
+    state.render(() {
+      item.isExpanded = !item.isExpanded;
+    });
+  }
+
+  void addItem(ListItem item) {}
+
+  // void findItem() {}
 } // _ToDoController
 
 // custome widget for to do list panels
@@ -109,13 +117,16 @@ class Panel extends StatefulWidget {
   final String name;
   final bool isFolder;
   final ListItem item;
-  final double indent;
+  final int indentCount;
+  final _ToDoController toDoCon;
+  static double indentSize = 50.0;
 
   Panel({
     @required this.isFolder,
     @required this.item,
+    @required this.toDoCon,
     this.name,
-    this.indent,
+    this.indentCount,
   });
 
   @override
@@ -130,15 +141,22 @@ class _PanelState extends State<Panel> {
   Color panelColor;
   Color textColor;
   bool checkedValue = false;
+  _PanelController con;
 
   @override
   void initState() {
     super.initState();
     item = widget.item;
+    con = _PanelController(this, widget.toDoCon);
+
     // child = widget.child;
 
     // item = Task(name: 'Task 1', id: 0);
     // item.isExpanded = true;
+  }
+
+  void render(func) {
+    setState(func);
   }
 
   @override
@@ -147,110 +165,134 @@ class _PanelState extends State<Panel> {
     panelColor = item.isFolder ? Colors.grey[600] : Colors.grey[400];
     textColor = item.isFolder ? Colors.white : Colors.grey[800];
 
+    // print('id: ')
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
-      child: Container(
-        width: screenWidth - widget.indent - 15,
-        height: 50.0,
-        decoration: BoxDecoration(
-          color: panelColor,
-          borderRadius: BorderRadius.circular(7.0),
-          // boxShadow: [
-          //   BoxShadow(
-          //     offset: Offset(5.0, 5.0),
-          //     blurRadius: 2.0,
-          //     color: Colors.grey[600],
-          //   ),
-          // ],
-        ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: item.isFolder ? 15.0 : 5.0,
+      child: Row(
+        children: [
+          SizedBox(
+              width: widget.indentCount == 0
+                  ? 0.0
+                  : widget.indentCount * Panel.indentSize),
+          Container(
+            width: screenWidth - (widget.indentCount * Panel.indentSize) - 20,
+            height: 50.0,
+            decoration: BoxDecoration(
+              color: panelColor,
+              borderRadius: BorderRadius.circular(7.0),
+              // boxShadow: [
+              //   BoxShadow(
+              //     offset: Offset(5.0, 5.0),
+              //     blurRadius: 2.0,
+              //     color: Colors.grey[600],
+              //   ),
+              // ],
             ),
-            // Display checkbox if task
-            !item.isFolder
-                ? Expanded(
-                    flex: 4,
-                    child: Transform.scale(
-                      scale: 1.5,
-                      child: Checkbox(
-                        onChanged: (bool value) {
-                          setState(() {
-                            checkedValue = value;
-                          });
-                        },
-                        value: checkedValue,
-                        checkColor: Colors.grey[800],
-                        activeColor: panelColor,
-                      ),
-                    ),
-                  )
-                : SizedBox(),
-            // Displaying item text
-            Expanded(
-              flex: 20,
-              child: Text(
-                widget.name,
-                style: TextStyle(
-                  fontSize: 28.0,
-                  fontFamily: 'Roboto',
-                  color: textColor,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: item.isFolder ? 15.0 : 5.0,
                 ),
-              ),
-            ),
-            // if item is folder display add icon
-            Expanded(
-              flex: 3,
-              child: item.isFolder
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        size: 36.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: null,
-                    )
-                  : SizedBox(),
-            ),
-            // if item is folder display drop down icon
-            Expanded(
-              flex: 2,
-              child: item.isFolder
-                  ? item.isExpanded
-                      ? Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(25.0, 0.0, 0.0, 25.0),
-                          child: IconButton(
-                              icon: Transform.rotate(
-                                angle: math.pi / 2,
-                                child: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  size: 30.0,
+                // Display checkbox if task
+                !item.isFolder
+                    ? Expanded(
+                        flex: 4,
+                        child: Transform.scale(
+                          scale: 1.5,
+                          child: Checkbox(
+                            onChanged: (bool value) {
+                              setState(() {
+                                checkedValue = value;
+                              });
+                            },
+                            value: checkedValue,
+                            checkColor: Colors.grey[800],
+                            activeColor: panelColor,
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+                // Displaying item text
+                Expanded(
+                  flex: 23,
+                  child: Text(
+                    widget.name,
+                    style: TextStyle(
+                      fontSize: 28.0,
+                      fontFamily: 'Roboto',
+                      color: textColor,
+                    ),
+                  ),
+                ),
+                // if item is folder display add icon
+                Expanded(
+                  flex: 3,
+                  child: item.isFolder
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.add,
+                            size: 36.0,
+                            color: Colors.white,
+                          ),
+                          onPressed: null,
+                        )
+                      : SizedBox(),
+                ),
+                // if item is folder display drop down icon
+                Expanded(
+                  flex: 3,
+                  child: item.isFolder
+                      ? item.isExpanded
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  3.0, 0.0, 0.0, 25.0),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.expand_more_rounded,
+                                  size: 35.0,
                                   color: Colors.white,
                                 ),
+                                onPressed: con.toggleExpanded,
                               ),
-                              onPressed: null),
-                        )
-                      : Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 0.0),
-                          child: IconButton(
-                              icon: Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 30.0,
-                                color: Colors.white,
+                            )
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.keyboard_arrow_right_rounded,
+                                  size: 35.0,
+                                  color: Colors.white,
+                                ),
+                                onPressed: con.toggleExpanded,
                               ),
-                              onPressed: null),
-                        )
-                  : SizedBox(),
+                            )
+                      : SizedBox(),
+                ),
+                SizedBox(
+                  width: 20.0,
+                )
+              ],
             ),
-            SizedBox(
-              width: 20.0,
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _PanelController {
+  _PanelState state;
+  _ToDoController toDoCon;
+
+  _PanelController(this.state, this.toDoCon);
+
+  void toggleExpanded() => state.render(() {
+        // toDoCon.state.render(() {
+        //   toDoCon.state.userList = toDoCon.state.userList;
+        // });
+        toDoCon.toggleExpanded(state.item);
+        // state.item.isExpanded = !state.item.isExpanded;
+      });
 }
