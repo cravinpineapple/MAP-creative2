@@ -1,4 +1,5 @@
 import 'package:creative2/model/UserRecord.dart';
+import 'package:creative2/screens/login_screen.dart';
 import 'package:creative2/screens/todo_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,35 +36,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
     List<Widget> builtList = con.buildList();
 
-    return Scaffold(
-      backgroundColor: Colors.grey[800],
-      appBar: AppBar(
-        title: Text('Welcome, ${userRecord.firstName} ${userRecord.lastName}'),
-        backgroundColor: Colors.grey[600],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
-          child: Column(
-            children: builtList.length != 0
-                ? builtList
-                : [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 240.0,
-                        left: 22.0,
-                        // right: 35.0,
-                      ),
-                      child: Text(
-                        'You currently have no to-do lists.\nClick the + to create one!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 23.0,
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        backgroundColor: Colors.grey[800],
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                child: Text(userRecord.email),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+                onTap: null,
+              ),
+              ListTile(
+                leading: Icon(Icons.exit_to_app),
+                title: Text('Sign Out'),
+                onTap: con.signOut,
+              ),
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          title:
+              Text('Welcome, ${userRecord.firstName} ${userRecord.lastName}'),
+          backgroundColor: Colors.grey[600],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
+            child: Column(
+              children: builtList.length != 0
+                  ? builtList
+                  : [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 240.0,
+                          left: 22.0,
+                          // right: 35.0,
+                        ),
+                        child: Text(
+                          'You currently have no to-do lists.\nClick the + to create one!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 23.0,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+            ),
           ),
         ),
       ),
@@ -108,5 +132,10 @@ class _Controller {
           ),
         )
         .toList();
+  }
+
+  void signOut() {
+    Navigator.of(state.context).pop(); // closer drawer
+    Navigator.of(state.context).pop(); // sign out
   }
 }
