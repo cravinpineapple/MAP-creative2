@@ -35,7 +35,12 @@ class _ToDoState extends State<ToDoScreen> {
         title: Text('User\'s To-Do List'),
         backgroundColor: Colors.grey[800],
         actions: [
-          IconButton(icon: Icon(Icons.add), onPressed: null),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              con.addDialog(null);
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -136,10 +141,10 @@ class _ToDoController {
                   formKey.currentState.save();
 
                   state.render(() {
+                    int addID = panelState != null ? panelState.item.id : 0;
+
                     state.userList.addItem(
-                        isFolder: isFolder,
-                        name: itemName,
-                        addID: panelState.item.id);
+                        isFolder: isFolder, name: itemName, addID: addID);
                   });
 
                   Navigator.pop(context);
@@ -247,7 +252,6 @@ class _PanelState extends State<Panel> {
   double screenWidth;
   Color panelColor;
   Color textColor;
-  bool checkedValue = false;
   _ToDoController con;
 
   // for add dialog check box
@@ -291,13 +295,13 @@ class _PanelState extends State<Panel> {
             decoration: BoxDecoration(
               color: panelColor,
               borderRadius: BorderRadius.circular(7.0),
-              // boxShadow: [
-              //   BoxShadow(
-              //     offset: Offset(5.0, 5.0),
-              //     blurRadius: 2.0,
-              //     color: Colors.grey[600],
-              //   ),
-              // ],
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(5.0, 5.0),
+                  blurRadius: 2.0,
+                  color: Colors.black,
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -313,10 +317,10 @@ class _PanelState extends State<Panel> {
                           child: Checkbox(
                             onChanged: (bool value) {
                               setState(() {
-                                checkedValue = value;
+                                item.isToggled = value;
                               });
                             },
-                            value: checkedValue,
+                            value: item.isToggled,
                             checkColor: Colors.grey[800],
                             activeColor: panelColor,
                           ),
