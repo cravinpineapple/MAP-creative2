@@ -13,7 +13,7 @@ class Folder extends ListItem {
     isOpen = false;
     this.id = id;
     hasChildren = false;
-    isExpanded = false;
+    isToggled = false;
   }
 
   @override
@@ -67,7 +67,7 @@ class Folder extends ListItem {
 
   String toListString(int tabLength) {
     String tab = '\t';
-    String str = (tab * tabLength) + '$name [id = $id, exp = $isExpanded]\n';
+    String str = (tab * tabLength) + '$name [id = $id, exp = $isToggled]\n';
 
     for (int i = 0; i < children.length; i++) {
       str += children[i].toListString(tabLength + 1);

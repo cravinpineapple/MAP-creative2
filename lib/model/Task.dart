@@ -2,11 +2,12 @@ import 'ListItem.dart';
 import 'ToDoList.dart';
 
 class Task extends ListItem {
-  bool isCompleted;
+  bool isToggled;
   String name;
 
   Task({this.name, int id}) {
     this.isFolder = false;
+    isToggled = false;
     children = null;
     this.id = id;
   }

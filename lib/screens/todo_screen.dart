@@ -85,7 +85,7 @@ class _ToDoController {
                               ? 0
                               : indentCount,
                         ),
-                        e.isExpanded
+                        e.isToggled
                             ? Column(
                                 children: buildListHierarchy(
                                     e.children, indentCount + 1),
@@ -101,7 +101,7 @@ class _ToDoController {
 
   void toggleExpanded(ListItem item) {
     state.render(() {
-      item.isExpanded = !item.isExpanded;
+      item.isToggled = !item.isToggled;
     });
   }
 
@@ -262,7 +262,7 @@ class _PanelState extends State<Panel> {
     // child = widget.child;
 
     // item = Task(name: 'Task 1', id: 0);
-    // item.isExpanded = true;
+    // item.isToggled = true;
   }
 
   void render(func) {
@@ -355,7 +355,7 @@ class _PanelState extends State<Panel> {
                 Expanded(
                   flex: 3,
                   child: item.isFolder
-                      ? item.isExpanded
+                      ? item.isToggled
                           ? Padding(
                               padding: const EdgeInsets.fromLTRB(
                                   3.0, 0.0, 0.0, 25.0),
@@ -409,6 +409,6 @@ class _PanelState extends State<Panel> {
 //         //   toDoCon.state.userList = toDoCon.state.userList;
 //         // });
 //         toDoCon.toggleExpanded(state.item);
-//         // state.item.isExpanded = !state.item.isExpanded;
+//         // state.item.isToggled = !state.item.isToggled;
 //       });
 // }

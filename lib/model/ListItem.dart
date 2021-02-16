@@ -1,6 +1,7 @@
 abstract class ListItem {
   bool isFolder;
-  bool isExpanded;
+  // acts as isExpanded for folder, and isCompleted for checkbox
+  bool isToggled;
   String name;
   List<ListItem> children = [];
   int id;
