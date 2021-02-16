@@ -13,7 +13,6 @@ class Creative2App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Text('Creative2App'),
       title: 'Creative Assignment 2',
       theme: ThemeData(
         brightness: lightMode ? Brightness.light : Brightness.dark,
