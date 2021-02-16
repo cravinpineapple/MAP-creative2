@@ -1,5 +1,6 @@
 import 'package:creative2/model/UserRecord.dart';
 import 'package:creative2/screens/login_screen.dart';
+import 'package:creative2/screens/profile_screen.dart';
 import 'package:creative2/screens/todo_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                 leading: Icon(Icons.person),
                 title: Text('Profile'),
-                onTap: null,
+                onTap: con.goToProfile,
               ),
               ListTile(
                 leading: Icon(Icons.exit_to_app),
@@ -137,5 +138,12 @@ class _Controller {
   void signOut() {
     Navigator.of(state.context).pop(); // closer drawer
     Navigator.of(state.context).pop(); // sign out
+  }
+
+  void goToProfile() async {
+    await Navigator.pushNamed(state.context, ProfileScreen.routeName,
+        arguments:
+            state.userRecord); // goes to profile screen, passing user record
+    Navigator.pop(state.context); // closes drawer
   }
 }
