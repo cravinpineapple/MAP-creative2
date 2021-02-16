@@ -23,7 +23,20 @@ class UserRecord {
     this.toDoLists = [];
     // ** might need to copy deeper
     for (int i = 0; i < userRecord.toDoLists.length; i++) {
-      this.toDoLists[i] = userRecord.toDoLists[i];
+      this.toDoLists.add(userRecord.toDoLists[i]);
+    }
+  }
+
+  void assign(UserRecord userRecord) {
+    this.firstName = userRecord.firstName;
+    this.lastName = userRecord.lastName;
+    this.email = userRecord.email;
+    this.password = userRecord.password;
+
+    this.toDoLists = [];
+    // ** might need to copy deeper
+    for (int i = 0; i < userRecord.toDoLists.length; i++) {
+      this.toDoLists.add(userRecord.toDoLists[i]);
     }
   }
 
