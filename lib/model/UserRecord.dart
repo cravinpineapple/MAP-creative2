@@ -14,7 +14,7 @@ class UserRecord {
       this.password,
       this.toDoLists});
 
-  UserRecord.clone({UserRecord userRecord}) {
+  UserRecord.clone(UserRecord userRecord) {
     this.firstName = userRecord.firstName;
     this.lastName = userRecord.lastName;
     this.email = userRecord.email;
