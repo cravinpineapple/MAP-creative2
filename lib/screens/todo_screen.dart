@@ -1,7 +1,6 @@
 import 'package:creative2/model/ListItem.dart';
 import 'package:creative2/model/ToDoList.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class ToDoScreen extends StatefulWidget {
   static const routeName = '/toDoScreen';
@@ -106,6 +105,114 @@ class _ToDoController {
     });
   }
 
+  void addDialog(_PanelState panelState) {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    bool isFolder = false;
+    String itemName = '';
+
+    showDialog(
+      context: state.context,
+      barrierDismissible: false,
+      builder: (context) {
+        bool checkedValue = false;
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.grey[200],
+            actions: [
+              FlatButton(
+                onPressed: () => Navigator.pop(state.context),
+                color: Colors.grey[800],
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 15.0, color: Colors.white),
+                ),
+              ),
+              FlatButton(
+                onPressed: () {
+                  if (!formKey.currentState.validate()) return;
+
+                  formKey.currentState.save();
+
+                  state.render(() {
+                    state.userList.addItem(
+                        isFolder: isFolder,
+                        name: itemName,
+                        addID: panelState.item.id);
+                  });
+
+                  Navigator.pop(context);
+                },
+                color: Colors.grey[800],
+                child: Text(
+                  'Add',
+                  style: TextStyle(fontSize: 15.0, color: Colors.white),
+                ),
+              ),
+            ],
+            content: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Text(
+                    'Name',
+                    style: TextStyle(
+                      color: Colors.grey[800],
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 200.0,
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(primaryColor: Colors.grey[800]),
+                      child: TextFormField(
+                        style: TextStyle(color: Colors.grey[800]),
+                        decoration: InputDecoration(
+                          hintText: 'Groceries, carrots, etc...',
+                        ),
+                        keyboardType: TextInputType.name,
+                        autocorrect: true,
+                        onSaved: (String value) {
+                          print('save: $value');
+                          isFolder = checkedValue;
+                          itemName = value;
+                        },
+                        validator: (String value) {
+                          print('validate: $value');
+                          if (value.length > 10)
+                            return 'Name too long';
+                          else
+                            return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  CheckboxListTile(
+                    title: Text(
+                      'Folder',
+                      style: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    value: checkedValue,
+                    onChanged: (bool value) => setState(() {
+                      checkedValue = value;
+                    }),
+                    checkColor: Colors.grey[800],
+                    activeColor: Colors.grey[200],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      },
+    );
+  }
+
   void addItem(ListItem item) {}
 
   // void findItem() {}
@@ -141,13 +248,16 @@ class _PanelState extends State<Panel> {
   Color panelColor;
   Color textColor;
   bool checkedValue = false;
-  _PanelController con;
+  _ToDoController con;
+
+  // for add dialog check box
+  bool addDialogCheck = false;
 
   @override
   void initState() {
     super.initState();
     item = widget.item;
-    con = _PanelController(this, widget.toDoCon);
+    con = widget.toDoCon;
 
     // child = widget.child;
 
@@ -235,7 +345,9 @@ class _PanelState extends State<Panel> {
                             size: 36.0,
                             color: Colors.white,
                           ),
-                          onPressed: null,
+                          onPressed: () {
+                            con.addDialog(this);
+                          },
                         )
                       : SizedBox(),
                 ),
@@ -253,7 +365,9 @@ class _PanelState extends State<Panel> {
                                   size: 35.0,
                                   color: Colors.white,
                                 ),
-                                onPressed: con.toggleExpanded,
+                                onPressed: () {
+                                  con.toggleExpanded(item);
+                                },
                               ),
                             )
                           : Padding(
@@ -265,7 +379,9 @@ class _PanelState extends State<Panel> {
                                   size: 35.0,
                                   color: Colors.white,
                                 ),
-                                onPressed: con.toggleExpanded,
+                                onPressed: () {
+                                  con.toggleExpanded(item);
+                                },
                               ),
                             )
                       : SizedBox(),
@@ -282,17 +398,17 @@ class _PanelState extends State<Panel> {
   }
 }
 
-class _PanelController {
-  _PanelState state;
-  _ToDoController toDoCon;
+// class _PanelController {
+//   _PanelState state;
+//   _ToDoController toDoCon;
 
-  _PanelController(this.state, this.toDoCon);
+//   _PanelController(this.state, this.toDoCon);
 
-  void toggleExpanded() => state.render(() {
-        // toDoCon.state.render(() {
-        //   toDoCon.state.userList = toDoCon.state.userList;
-        // });
-        toDoCon.toggleExpanded(state.item);
-        // state.item.isExpanded = !state.item.isExpanded;
-      });
-}
+//   void toggleExpanded() => state.render(() {
+//         // toDoCon.state.render(() {
+//         //   toDoCon.state.userList = toDoCon.state.userList;
+//         // });
+//         toDoCon.toggleExpanded(state.item);
+//         // state.item.isExpanded = !state.item.isExpanded;
+//       });
+// }
