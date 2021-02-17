@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     userRecord = ModalRoute.of(context).settings.arguments;
 
-    if (userRecord.toDoLists.isEmpty) {
+    if (userRecord.toDoLists.isEmpty && userRecord.firstName == 'Eren') {
       userRecord.toDoLists.add(userRecord.buildTestList('Groceries'));
       userRecord.toDoLists.add(userRecord.buildTestList('Schoolwork'));
       userRecord.toDoLists.add(userRecord.buildTestList('Chores'));
