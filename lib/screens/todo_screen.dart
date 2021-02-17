@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 
 class ToDoScreen extends StatefulWidget {
   static const routeName = '/toDoScreen';
+  final ToDoList toDoReplace;
+
+  ToDoScreen({this.toDoReplace});
 
   @override
   State<StatefulWidget> createState() {
-    return _ToDoState();
+    return _ToDoState(userList: this.toDoReplace);
   }
 }
 
 class _ToDoState extends State<ToDoScreen> {
   ToDoList userList;
   _ToDoController con;
+
+  _ToDoState({this.userList});
 
   @override
   void initState() {
@@ -27,10 +32,9 @@ class _ToDoState extends State<ToDoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    userList = ModalRoute.of(context).settings.arguments;
-    List builtHierarchy = con.buildListHierarchy(userList.children, 0);
-
+    userList ??= ModalRoute.of(context).settings.arguments;
     print(userList);
+    List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,15 +68,7 @@ class _ToDoController {
 
   List buildListHierarchy(List<ListItem> children, int indentCount) {
     // iterate through to do list items
-    print('');
-    print('INFO====================');
-    for (int i = 0; i < children.length; i++) {
-      print(
-          'Name: ${children[i].name}, Checked: ${children[i].isToggled}, ID: ${children[i].id}');
-    }
-    print('INFO====================\n');
-
-    return children
+    var builtList = children
         .map(
           (e) => !e.isFolder
               // placed within row to adjust for slight pixel offset of folder rows
@@ -107,6 +103,8 @@ class _ToDoController {
                 ),
         )
         .toList();
+
+    return builtList;
   } // buildListHierarchy
 
   void toggleExpanded(ListItem item) {
@@ -120,7 +118,6 @@ class _ToDoController {
     state.render(() {
       state.userList.deleteItem(deleteID: deleteID);
     });
-    state.render(() {}); // additional render to fix remaining check
   }
 
   void addDialog(_PanelState panelState) {
@@ -341,6 +338,34 @@ class _PanelState extends State<Panel> {
                     ),
                   ),
                 ),
+                // if item is folder and folder is empty, display delete icon
+                item.isFolder
+                    ? Expanded(
+                        flex: 3,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            size: 36.0,
+                            color: item.children.isEmpty ? Colors.white : panelColor,
+                          ),
+                          onPressed: item.children.isEmpty
+                              ? () {
+                                  con.removeItem(item.id);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) =>
+                                          ToDoScreen(
+                                        toDoReplace: con.state.userList,
+                                      ),
+                                      transitionDuration: Duration(seconds: 0),
+                                    ),
+                                  );
+                                }
+                              : null,
+                        ),
+                      )
+                    : SizedBox(),
                 // if item is folder display add icon
                 Expanded(
                   flex: 3,
@@ -403,6 +428,16 @@ class _PanelState extends State<Panel> {
                           onPressed: item.isToggled
                               ? () {
                                   con.removeItem(item.id);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) =>
+                                          ToDoScreen(
+                                        toDoReplace: con.state.userList,
+                                      ),
+                                      transitionDuration: Duration(seconds: 0),
+                                    ),
+                                  );
                                 }
                               : null,
                         ),
