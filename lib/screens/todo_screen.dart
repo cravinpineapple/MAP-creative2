@@ -6,6 +6,7 @@ class ToDoScreen extends StatefulWidget {
   static const routeName = '/toDoScreen';
   final ToDoList toDoReplace;
 
+  // paremeter passed for pushReplacement (on deletion)
   ToDoScreen({this.toDoReplace});
 
   @override
@@ -18,6 +19,7 @@ class _ToDoState extends State<ToDoScreen> {
   ToDoList userList;
   _ToDoController con;
 
+  // parameter for pushReplacement (on deletion)
   _ToDoState({this.userList});
 
   @override
@@ -33,7 +35,6 @@ class _ToDoState extends State<ToDoScreen> {
   @override
   Widget build(BuildContext context) {
     userList ??= ModalRoute.of(context).settings.arguments;
-    print(userList);
     List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
     return Scaffold(
@@ -114,7 +115,6 @@ class _ToDoController {
   }
 
   void removeItem(int deleteID) {
-    print('removeItem: $deleteID');
     state.render(() {
       state.userList.deleteItem(deleteID: deleteID);
     });
@@ -278,8 +278,6 @@ class _PanelState extends State<Panel> {
     screenWidth = MediaQuery.of(context).size.width;
     panelColor = item.isFolder ? Colors.grey[600] : Colors.grey[400];
     textColor = item.isFolder ? Colors.white : Colors.grey[800];
-
-    print('Name: ${item.name}, Checked: ${item.isToggled}, ID: ${item.id}');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
