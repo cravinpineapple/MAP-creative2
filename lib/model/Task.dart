@@ -24,6 +24,6 @@ class Task extends ListItem {
   String toListString(int tabLength) {
     String tab = '\t';
 
-    return (tab * tabLength) + name + ' [id = $id]\n';
+    return (tab * tabLength) + name + ' [id = $id, checked = $isToggled]\n';
   }
 }
