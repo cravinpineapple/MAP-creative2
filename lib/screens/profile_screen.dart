@@ -1,4 +1,5 @@
 import 'package:creative2/model/UserRecord.dart';
+import 'package:creative2/screens/todo_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class _ProfileState extends State<ProfileScreen> {
   UserRecord userRecordOriginal;
   bool editMode = false;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  Color selectedColor = Colors.grey[300];
+  List<int> selected = [];
 
   @override
   void initState() {
@@ -30,15 +33,14 @@ class _ProfileState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    userRecordOriginal ??= ModalRoute.of(context)
-        .settings
-        .arguments; // null aware operator assignment
+    userRecordOriginal ??=
+        ModalRoute.of(context).settings.arguments; // null aware operator assignment
     userRecord ??= UserRecord.clone(userRecordOriginal);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[800],
-        title:
-            Text('${userRecord.firstName} ${userRecord.lastName}\'s Profile'),
+        title: Text('${userRecord.firstName} ${userRecord.lastName}\'s Profile'),
         actions: [
           editMode
               ? IconButton(
@@ -61,7 +63,7 @@ class _ProfileState extends State<ProfileScreen> {
                 Row(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text(
                         'First Name',
                         style: Theme.of(context).textTheme.headline6,
@@ -81,7 +83,7 @@ class _ProfileState extends State<ProfileScreen> {
                 Row(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text(
                         'Last Name',
                         style: Theme.of(context).textTheme.headline6,
@@ -101,7 +103,7 @@ class _ProfileState extends State<ProfileScreen> {
                 Row(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text(
                         'Email',
                         style: Theme.of(context).textTheme.headline6,
@@ -113,7 +115,7 @@ class _ProfileState extends State<ProfileScreen> {
                         enabled: editMode,
                         initialValue: userRecord.email,
                         validator: con.validateEmail,
-                        onSaved: con.validateEmail,
+                        onSaved: con.saveEmail,
                       ),
                     ),
                   ],
@@ -121,7 +123,7 @@ class _ProfileState extends State<ProfileScreen> {
                 Row(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text(
                         'Password',
                         style: Theme.of(context).textTheme.headline6,
@@ -141,6 +143,16 @@ class _ProfileState extends State<ProfileScreen> {
                 SizedBox(
                   height: 20.0,
                 ),
+                Divider(
+                  thickness: 3.0,
+                  color: Colors.grey[800],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Column(
+                  children: con.buildList(),
+                )
               ],
             ),
           ),
@@ -160,6 +172,10 @@ class _Controller {
 
   void update() {
     if (!state.formKey.currentState.validate()) return;
+
+    for (var id in state.selected) {
+      state.userRecord.toDoLists.removeWhere((e) => e.id == id);
+    }
 
     state.formKey.currentState.save();
     state.userRecordOriginal.assign(state.userRecord);
@@ -191,14 +207,13 @@ class _Controller {
     bool alreadyExists = false;
 
     for (var u in UserRecord.fakeDB) {
-      if (u.email == value) {
+      if (u.email == value && u.email != state.userRecordOriginal.email) {
         alreadyExists = true;
         break;
       }
     }
 
-    if (value.contains('@') && value.contains('.') && !alreadyExists)
-      return null;
+    if (value.contains('@') && value.contains('.') && !alreadyExists) return null;
 
     return alreadyExists ? 'email already exists' : 'email invalid';
   }
@@ -211,5 +226,50 @@ class _Controller {
     if (value.length < 6) return 'password too short';
 
     return null;
+  }
+
+  List<Widget> buildList() {
+    if (state.userRecord.toDoLists == null) return [];
+
+    return state.userRecord.toDoLists
+        .map(
+          (e) => Padding(
+            padding: const EdgeInsets.only(bottom: 13.0),
+            child: Container(
+              width: 370.0,
+              height: 65.0,
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(
+                      color: Colors.grey[900],
+                      width: 5.0,
+                    )),
+                color: state.selected.contains(e.id) ? Colors.red[400] : Colors.grey[300],
+                onLongPress: () {
+                  if (state.selected.length == 0) {
+                    state.render(() => state.selected.add(e.id));
+                  }
+                  state.render(() => state.editMode = true);
+                },
+                onPressed: state.editMode
+                    ? () {
+                        print(state.selected);
+                        if (state.selected.contains(e.id)) {
+                          state.render(() => state.selected.remove(e.id));
+                        } else {
+                          state.render(() => state.selected.add(e.id));
+                        }
+                      }
+                    : null,
+                child: Text(
+                  e.name,
+                  style: TextStyle(fontSize: 30.0),
+                ),
+              ),
+            ),
+          ),
+        )
+        .toList();
   }
 }
