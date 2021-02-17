@@ -32,8 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     userRecord = ModalRoute.of(context).settings.arguments;
 
-    if (userRecord.toDoLists.isEmpty)
-      userRecord.toDoLists.add(userRecord.buildTestList());
+    if (userRecord.toDoLists.isEmpty) {
+      userRecord.toDoLists.add(userRecord.buildTestList('Test 1'));
+    }
 
     List<Widget> builtList = con.buildList();
 
@@ -151,6 +152,7 @@ class _Controller {
     await Navigator.pushNamed(state.context, ProfileScreen.routeName,
         arguments: state.userRecord); // goes to profile screen, passing user record
     Navigator.pop(state.context); // closes drawer
+    state.render(() {}); // re render due to changes made from profile
   }
 
   void addList(BuildContext context) {
