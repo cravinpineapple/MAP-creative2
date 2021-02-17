@@ -8,7 +8,6 @@ class ToDoList {
   List<ListItem> children = [];
   String name;
   int id = 0;
-  int localID = 0;
   int idCount = 0;
 
   ToDoList({this.name}) {
