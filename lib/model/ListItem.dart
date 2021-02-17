@@ -5,12 +5,13 @@ abstract class ListItem {
   String name;
   List<ListItem> children = [];
   int id;
+  int depth;
 
   ListItem({
     this.isFolder = false,
   });
 
   bool deleteItem({int deleteID});
-  void addItem({bool isFolder, String name, int addID, int newID});
+  void addItem({bool isFolder, String name, int addID, int newID, int depth});
   String toListString(int tabLength);
 }

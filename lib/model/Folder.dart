@@ -6,8 +6,9 @@ class Folder extends ListItem {
   bool isOpen;
   String name;
   bool hasChildren;
+  int depth;
 
-  Folder({this.name, int id}) {
+  Folder({this.name, int id, this.depth}) {
     this.isFolder = true;
     children = [];
     isOpen = false;
@@ -17,13 +18,13 @@ class Folder extends ListItem {
   }
 
   @override
-  void addItem({bool isFolder, String name, int addID, int newID}) {
+  void addItem({bool isFolder, String name, int addID, int newID, int depth}) {
     hasChildren = true;
 
     // if adding to root
     if (this.id == addID) {
       if (isFolder) {
-        children.add(new Folder(name: name, id: newID));
+        children.add(new Folder(name: name, id: newID, depth: depth));
       } else {
         children.add(new Task(name: name, id: newID));
       }
@@ -35,7 +36,8 @@ class Folder extends ListItem {
     // if adding to sub-root
     for (int i = 0; i < children.length; i++) {
       if (children[i].isFolder) {
-        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: newID);
+        children[i].addItem(
+            isFolder: isFolder, name: name, addID: addID, newID: newID, depth: depth + 1);
       }
     }
   }
@@ -66,7 +68,8 @@ class Folder extends ListItem {
 
   String toListString(int tabLength) {
     String tab = '\t';
-    String str = (tab * tabLength) + '$name [id = $id, exp = $isToggled]\n';
+    String str =
+        (tab * tabLength) + '$name [id = $id, exp = $isToggled, depth = $depth]\n';
 
     for (int i = 0; i < children.length; i++) {
       str += children[i].toListString(tabLength + 1);

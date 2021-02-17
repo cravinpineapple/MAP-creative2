@@ -23,7 +23,7 @@ class ToDoList {
     // if adding to root
     if (0 == addID) {
       if (isFolder) {
-        children.add(new Folder(name: name, id: idCount));
+        children.add(new Folder(name: name, id: idCount, depth: 0));
       } else {
         children.add(new Task(name: name, id: idCount));
       }
@@ -34,7 +34,8 @@ class ToDoList {
     // if adding to sub-root
     for (int i = 0; i < children.length; i++) {
       if (children[i].isFolder) {
-        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: idCount);
+        children[i].addItem(
+            isFolder: isFolder, name: name, addID: addID, newID: idCount, depth: 1);
       }
     }
   }

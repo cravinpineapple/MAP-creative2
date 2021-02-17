@@ -13,7 +13,7 @@ class Task extends ListItem {
   }
 
   @override
-  void addItem({bool isFolder, String name, int addID, int newID}) {}
+  void addItem({bool isFolder, String name, int addID, int newID, int depth}) {}
 
   @override
   bool deleteItem({int deleteID}) {
