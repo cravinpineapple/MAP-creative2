@@ -70,7 +70,7 @@ class _ToDoController {
       print(
           'Name: ${children[i].name}, Checked: ${children[i].isToggled}, ID: ${children[i].id}');
     }
-    print('INFO====================');
+    print('INFO====================\n');
 
     return children
         .map(
