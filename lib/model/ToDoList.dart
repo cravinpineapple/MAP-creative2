@@ -21,7 +21,7 @@ class ToDoList {
     idCount++;
 
     // if adding to root
-    if (this.id == addID) {
+    if (0 == addID) {
       if (isFolder) {
         children.add(new Folder(name: name, id: idCount));
       } else {
