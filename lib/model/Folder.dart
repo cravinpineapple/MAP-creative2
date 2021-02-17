@@ -45,14 +45,15 @@ class Folder extends ListItem {
     for (int i = 0; i < children.length; i++) {
       // delete ID found & is folder
       if (children[i].id == deleteID) {
-        children.removeAt(i);
+        // children.removeAt(i);
+        children.remove(children[i]);
         // update status of children due to deleton
         hasChildren = children.length != 0 ? true : false;
         // deleted, so signal up to list to stop search
         return true;
       } else if (children[i].isFolder) {
         // if deleted, signal up to list to stop search
-        return children[i].deleteItem(deleteID: deleteID);
+        children[i].deleteItem(deleteID: deleteID);
       }
     }
 
