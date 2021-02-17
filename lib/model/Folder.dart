@@ -35,8 +35,7 @@ class Folder extends ListItem {
     // if adding to sub-root
     for (int i = 0; i < children.length; i++) {
       if (children[i].isFolder) {
-        children[i].addItem(
-            isFolder: isFolder, name: name, addID: addID, newID: newID);
+        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: newID);
       }
     }
   }
@@ -44,7 +43,6 @@ class Folder extends ListItem {
   @override
   bool deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
-      print('${children[i].id}');
       // delete ID found & is folder
       if (children[i].id == deleteID) {
         children.removeAt(i);
