@@ -30,9 +30,11 @@ class _ToDoState extends State<ToDoScreen> {
     userList = ModalRoute.of(context).settings.arguments;
     List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
+    print(userList);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('User\'s To-Do List'),
+        title: Text('${userList.name}'),
         backgroundColor: Colors.grey[800],
         actions: [
           IconButton(
@@ -62,6 +64,14 @@ class _ToDoController {
 
   List buildListHierarchy(List<ListItem> children, int indentCount) {
     // iterate through to do list items
+    print('');
+    print('INFO====================');
+    for (int i = 0; i < children.length; i++) {
+      print(
+          'Name: ${children[i].name}, Checked: ${children[i].isToggled}, ID: ${children[i].id}');
+    }
+    print('INFO====================');
+
     return children
         .map(
           (e) => !e.isFolder
@@ -70,12 +80,11 @@ class _ToDoController {
                   isFolder: e.isFolder,
                   item: e,
                   toDoCon: this,
-                  name: e.name,
                   indentCount: state.userList.children.contains(e) ? 0 : indentCount,
                 )
               : // if folder
-              //  check if expanded & render accordingly
-              // create row with indentation and column with information
+              //   check if expanded & render accordingly
+              //   create row with indentation and column with information
               Row(
                   children: [
                     Column(
@@ -83,7 +92,6 @@ class _ToDoController {
                         Panel(
                           isFolder: e.isFolder,
                           item: e,
-                          name: e.name,
                           toDoCon: this,
                           indentCount:
                               state.userList.children.contains(e) ? 0 : indentCount,
@@ -105,6 +113,14 @@ class _ToDoController {
     state.render(() {
       item.isToggled = !item.isToggled;
     });
+  }
+
+  void removeItem(int deleteID) {
+    print('removeItem: $deleteID');
+    state.render(() {
+      state.userList.deleteItem(deleteID: deleteID);
+    });
+    state.render(() {}); // additional render to fix remaining check
   }
 
   void addDialog(_PanelState panelState) {
@@ -218,8 +234,6 @@ class _ToDoController {
 
 // custome widget for to do list panels
 class Panel extends StatefulWidget {
-  // final Widget child;
-  final String name;
   final bool isFolder;
   final ListItem item;
   final int indentCount;
@@ -230,7 +244,6 @@ class Panel extends StatefulWidget {
     @required this.isFolder,
     @required this.item,
     @required this.toDoCon,
-    this.name,
     this.indentCount,
   });
 
@@ -246,6 +259,7 @@ class _PanelState extends State<Panel> {
   Color panelColor;
   Color textColor;
   _ToDoController con;
+  String name;
 
   // for add dialog check box
   bool addDialogCheck = false;
@@ -255,11 +269,6 @@ class _PanelState extends State<Panel> {
     super.initState();
     item = widget.item;
     con = widget.toDoCon;
-
-    // child = widget.child;
-
-    // item = Task(name: 'Task 1', id: 0);
-    // item.isToggled = true;
   }
 
   void render(func) {
@@ -268,9 +277,12 @@ class _PanelState extends State<Panel> {
 
   @override
   Widget build(BuildContext context) {
+    name = item.name;
     screenWidth = MediaQuery.of(context).size.width;
     panelColor = item.isFolder ? Colors.grey[600] : Colors.grey[400];
     textColor = item.isFolder ? Colors.white : Colors.grey[800];
+
+    print('Name: ${item.name}, Checked: ${item.isToggled}, ID: ${item.id}');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
@@ -301,7 +313,7 @@ class _PanelState extends State<Panel> {
                 // Display checkbox if task
                 !item.isFolder
                     ? Expanded(
-                        flex: 4,
+                        flex: 8,
                         child: Transform.scale(
                           scale: 1.5,
                           child: Checkbox(
@@ -321,7 +333,7 @@ class _PanelState extends State<Panel> {
                 Expanded(
                   flex: 23,
                   child: Text(
-                    widget.name,
+                    name,
                     style: TextStyle(
                       fontSize: 28.0,
                       fontFamily: 'Roboto',
@@ -378,6 +390,24 @@ class _PanelState extends State<Panel> {
                             )
                       : SizedBox(),
                 ),
+                // if check box and is completed, display delete icon
+                !item.isFolder
+                    ? Expanded(
+                        flex: 7,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            size: 36.0,
+                            color: item.isToggled ? Colors.white : panelColor,
+                          ),
+                          onPressed: item.isToggled
+                              ? () {
+                                  con.removeItem(item.id);
+                                }
+                              : null,
+                        ),
+                      )
+                    : SizedBox(),
                 SizedBox(
                   width: 20.0,
                 )
