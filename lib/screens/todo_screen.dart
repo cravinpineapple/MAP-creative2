@@ -37,6 +37,8 @@ class _ToDoState extends State<ToDoScreen> {
     userList ??= ModalRoute.of(context).settings.arguments;
     List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
+    print(userList);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${userList.name}'),
@@ -224,6 +226,37 @@ class _ToDoController {
     );
   }
 
+  void maxDepthDialog(_PanelState pState) {
+    showDialog(
+      context: state.context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          backgroundColor: Colors.grey[200],
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(state.context),
+              color: Colors.grey[800],
+              child: Text(
+                'Ok',
+                style: TextStyle(fontSize: 15.0, color: Colors.white),
+              ),
+            ),
+          ],
+          content: Text(
+            'Max Folder Depth Reached',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 25.0,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void addItem(ListItem item) {}
 
   // void findItem() {}
@@ -336,34 +369,6 @@ class _PanelState extends State<Panel> {
                     ),
                   ),
                 ),
-                // if item is folder and folder is empty, display delete icon
-                item.isFolder
-                    ? Expanded(
-                        flex: 3,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            size: 36.0,
-                            color: item.children.isEmpty ? Colors.white : panelColor,
-                          ),
-                          onPressed: item.children.isEmpty
-                              ? () {
-                                  con.removeItem(item.id);
-                                  Navigator.pushReplacement(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation1, animation2) =>
-                                          ToDoScreen(
-                                        toDoReplace: con.state.userList,
-                                      ),
-                                      transitionDuration: Duration(seconds: 0),
-                                    ),
-                                  );
-                                }
-                              : null,
-                        ),
-                      )
-                    : SizedBox(),
                 // if item is folder display add icon
                 Expanded(
                   flex: 3,
@@ -375,42 +380,71 @@ class _PanelState extends State<Panel> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            con.addDialog(this);
+                            if (item.depth == 2)
+                              con.maxDepthDialog(this);
+                            else
+                              con.addDialog(this);
                           },
                         )
                       : SizedBox(),
                 ),
-                // if item is folder display drop down icon
+                // drop down or delete icon
                 Expanded(
                   flex: 3,
+                  // if item is folder display respective folder icon. if not, display nothing
                   child: item.isFolder
-                      ? item.isToggled
-                          ? Padding(
-                              padding: const EdgeInsets.fromLTRB(3.0, 0.0, 0.0, 25.0),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.expand_more_rounded,
-                                  size: 35.0,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  con.toggleExpanded(item);
-                                },
+                      ? item.children.isEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                size: 36.0,
+                                color: item.children.isEmpty ? Colors.white : panelColor,
                               ),
+                              onPressed: item.children.isEmpty
+                                  ? () {
+                                      con.removeItem(item.id);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder:
+                                              (context, animation1, animation2) =>
+                                                  ToDoScreen(
+                                            toDoReplace: con.state.userList,
+                                          ),
+                                          transitionDuration: Duration(seconds: 0),
+                                        ),
+                                      );
+                                    }
+                                  : null,
                             )
-                          : Padding(
-                              padding: const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.keyboard_arrow_right_rounded,
-                                  size: 35.0,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  con.toggleExpanded(item);
-                                },
-                              ),
-                            )
+                          // if item is folder display drop down icon
+                          : item.isToggled
+                              ? Padding(
+                                  padding: const EdgeInsets.fromLTRB(3.0, 0.0, 0.0, 25.0),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.expand_more_rounded,
+                                      size: 35.0,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      con.toggleExpanded(item);
+                                    },
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_right_rounded,
+                                      size: 35.0,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      con.toggleExpanded(item);
+                                    },
+                                  ),
+                                )
                       : SizedBox(),
                 ),
                 // if check box and is completed, display delete icon
