@@ -7,12 +7,7 @@ class UserRecord {
   String password;
   List<ToDoList> toDoLists;
 
-  UserRecord(
-      {this.firstName,
-      this.lastName,
-      this.email,
-      this.password,
-      this.toDoLists});
+  UserRecord({this.firstName, this.lastName, this.email, this.password, this.toDoLists});
 
   UserRecord.clone(UserRecord userRecord) {
     this.firstName = userRecord.firstName;
@@ -49,8 +44,8 @@ class UserRecord {
   }
 
   // ** temp
-  ToDoList buildTestList() {
-    ToDoList newToDoList = ToDoList(name: 'Test');
+  ToDoList buildTestList(String name) {
+    ToDoList newToDoList = ToDoList(name: name);
 
     newToDoList.addItem(name: 'Folder 1', isFolder: true, addID: 0);
     newToDoList.addItem(name: 'Task 1', isFolder: false, addID: 0);
