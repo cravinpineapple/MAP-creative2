@@ -254,7 +254,6 @@ class _Controller {
                 },
                 onPressed: state.editMode
                     ? () {
-                        print(state.selected);
                         if (state.selected.contains(e.id)) {
                           state.render(() => state.selected.remove(e.id));
                         } else {
