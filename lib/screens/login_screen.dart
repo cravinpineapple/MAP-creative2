@@ -98,8 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: 260.0,
                         child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(primaryColor: Colors.white),
+                          data: Theme.of(context).copyWith(primaryColor: Colors.white),
                           child: TextFormField(
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
@@ -116,8 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: 260.0,
                         child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(primaryColor: Colors.white),
+                          data: Theme.of(context).copyWith(primaryColor: Colors.white),
                           child: TextFormField(
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
@@ -190,6 +188,13 @@ class _Controller {
 
     // email / password format is valid, now save information.
     state.formKey.currentState.save();
+
+    for (var u in UserRecord.fakeDB) {
+      print('Name: ${u.firstName} ${u.lastName}');
+      print('Email: ${u.email}');
+      print('Password: ${u.password}');
+      print('======================');
+    }
 
     var user = UserRecord.fakeDB.firstWhere(
         (e) => e.email == userRecord.email && e.password == userRecord.password,
