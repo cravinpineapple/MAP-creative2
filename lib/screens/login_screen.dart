@@ -22,6 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     con = _Controller(this);
+
+    // for displaying user information to log in with
+    for (var u in UserRecord.fakeDB) {
+      print('Name: ${u.firstName} ${u.lastName}');
+      print('Email: ${u.email}');
+      print('Password: ${u.password}');
+      print('======================');
+    }
   }
 
   void render(func) {
@@ -188,13 +196,6 @@ class _Controller {
 
     // email / password format is valid, now save information.
     state.formKey.currentState.save();
-
-    for (var u in UserRecord.fakeDB) {
-      print('Name: ${u.firstName} ${u.lastName}');
-      print('Email: ${u.email}');
-      print('Password: ${u.password}');
-      print('======================');
-    }
 
     var user = UserRecord.fakeDB.firstWhere(
         (e) => e.email == userRecord.email && e.password == userRecord.password,
