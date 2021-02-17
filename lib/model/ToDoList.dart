@@ -43,10 +43,9 @@ class ToDoList {
   //  searches until deleted
   void deleteItem({int deleteID}) {
     for (int i = 0; i < children.length; i++) {
-      print('${children[i].id}');
-
       if (children[i].id == deleteID) {
-        children.removeAt(i);
+        print('${children[i].id} deleted');
+        children.remove(children[i]);
         // successful delete, stop searching
         return;
       } else if (children[i].isFolder) {
