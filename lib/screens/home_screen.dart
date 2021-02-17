@@ -156,8 +156,6 @@ class _Controller {
   }
 
   void addList(BuildContext context) {
-    print('hello!');
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -221,7 +219,6 @@ class _Controller {
                         listName = value;
                       },
                       validator: (String value) {
-                        print('validate: $value');
                         if (value.length > 15)
                           return 'Name too long';
                         else
