@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             children: [
               DrawerHeader(
-                child: Text(userRecord.email),
+                child: Text('${userRecord.firstName} ${userRecord.lastName}'),
               ),
               ListTile(
                 leading: Icon(Icons.person),
@@ -61,9 +61,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         appBar: AppBar(
-          title:
-              Text('Welcome, ${userRecord.firstName} ${userRecord.lastName}'),
+          title: Text('Welcome, ${userRecord.firstName} ${userRecord.lastName}'),
           backgroundColor: Colors.grey[600],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                con.addList(context);
+              },
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -110,7 +117,7 @@ class _Controller {
             padding: const EdgeInsets.only(bottom: 13.0),
             child: Container(
               width: 370.0,
-              height: 75.0,
+              height: 65.0,
               child: RaisedButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
@@ -126,7 +133,7 @@ class _Controller {
                 ),
                 child: Text(
                   e.name,
-                  style: TextStyle(fontSize: 40.0),
+                  style: TextStyle(fontSize: 30.0),
                 ),
               ),
             ),
@@ -142,8 +149,90 @@ class _Controller {
 
   void goToProfile() async {
     await Navigator.pushNamed(state.context, ProfileScreen.routeName,
-        arguments:
-            state.userRecord); // goes to profile screen, passing user record
+        arguments: state.userRecord); // goes to profile screen, passing user record
     Navigator.pop(state.context); // closes drawer
+  }
+
+  void addList(BuildContext context) {
+    print('hello!');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: StatefulBuilder(builder: (context, setState) {
+        GlobalKey<FormState> formKey = GlobalKey<FormState>();
+        String listName;
+        return AlertDialog(
+          scrollable: true,
+          backgroundColor: Colors.grey[200],
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(state.context),
+              color: Colors.grey[800],
+              child: Text(
+                'Cancel',
+                style: TextStyle(fontSize: 15.0, color: Colors.white),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                if (!formKey.currentState.validate()) return;
+
+                formKey.currentState.save();
+
+                state.render(() {
+                  state.userRecord.addToDoList(toDoListName: listName);
+                });
+
+                Navigator.pop(context);
+              },
+              color: Colors.grey[800],
+              child: Text(
+                'Add',
+                style: TextStyle(fontSize: 15.0, color: Colors.white),
+              ),
+            ),
+          ],
+          content: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                Text(
+                  'To-Do List Name',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 15.0,
+                  ),
+                ),
+                SizedBox(
+                  width: 200.0,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(primaryColor: Colors.grey[800]),
+                    child: TextFormField(
+                      style: TextStyle(color: Colors.grey[800]),
+                      decoration: InputDecoration(
+                        hintText: 'Project, school, etc.',
+                      ),
+                      keyboardType: TextInputType.name,
+                      autocorrect: true,
+                      onSaved: (String value) {
+                        listName = value;
+                      },
+                      validator: (String value) {
+                        print('validate: $value');
+                        if (value.length > 15)
+                          return 'Name too long';
+                        else
+                          return null;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
   }
 }
