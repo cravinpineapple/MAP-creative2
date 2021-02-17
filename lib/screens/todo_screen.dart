@@ -71,8 +71,7 @@ class _ToDoController {
                   item: e,
                   toDoCon: this,
                   name: e.name,
-                  indentCount:
-                      state.userList.children.contains(e) ? 0 : indentCount,
+                  indentCount: state.userList.children.contains(e) ? 0 : indentCount,
                 )
               : // if folder
               //  check if expanded & render accordingly
@@ -86,14 +85,12 @@ class _ToDoController {
                           item: e,
                           name: e.name,
                           toDoCon: this,
-                          indentCount: state.userList.children.contains(e)
-                              ? 0
-                              : indentCount,
+                          indentCount:
+                              state.userList.children.contains(e) ? 0 : indentCount,
                         ),
                         e.isToggled
                             ? Column(
-                                children: buildListHierarchy(
-                                    e.children, indentCount + 1),
+                                children: buildListHierarchy(e.children, indentCount + 1),
                               )
                             : SizedBox(height: 0.0, width: 0.0),
                       ],
@@ -142,9 +139,8 @@ class _ToDoController {
 
                   state.render(() {
                     int addID = panelState != null ? panelState.item.id : 0;
-
-                    state.userList.addItem(
-                        isFolder: isFolder, name: itemName, addID: addID);
+                    state.userList
+                        .addItem(isFolder: isFolder, name: itemName, addID: addID);
                   });
 
                   Navigator.pop(context);
@@ -170,8 +166,7 @@ class _ToDoController {
                   SizedBox(
                     width: 200.0,
                     child: Theme(
-                      data: Theme.of(context)
-                          .copyWith(primaryColor: Colors.grey[800]),
+                      data: Theme.of(context).copyWith(primaryColor: Colors.grey[800]),
                       child: TextFormField(
                         style: TextStyle(color: Colors.grey[800]),
                         decoration: InputDecoration(
@@ -180,12 +175,10 @@ class _ToDoController {
                         keyboardType: TextInputType.name,
                         autocorrect: true,
                         onSaved: (String value) {
-                          print('save: $value');
                           isFolder = checkedValue;
                           itemName = value;
                         },
                         validator: (String value) {
-                          print('validate: $value');
                           if (value.length > 10)
                             return 'Name too long';
                           else
@@ -279,16 +272,13 @@ class _PanelState extends State<Panel> {
     panelColor = item.isFolder ? Colors.grey[600] : Colors.grey[400];
     textColor = item.isFolder ? Colors.white : Colors.grey[800];
 
-    // print('id: ')
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: Row(
         children: [
           SizedBox(
-              width: widget.indentCount == 0
-                  ? 0.0
-                  : widget.indentCount * Panel.indentSize),
+              width:
+                  widget.indentCount == 0 ? 0.0 : widget.indentCount * Panel.indentSize),
           Container(
             width: screenWidth - (widget.indentCount * Panel.indentSize) - 20,
             height: 50.0,
@@ -361,8 +351,7 @@ class _PanelState extends State<Panel> {
                   child: item.isFolder
                       ? item.isToggled
                           ? Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  3.0, 0.0, 0.0, 25.0),
+                              padding: const EdgeInsets.fromLTRB(3.0, 0.0, 0.0, 25.0),
                               child: IconButton(
                                 icon: Icon(
                                   Icons.expand_more_rounded,
@@ -375,8 +364,7 @@ class _PanelState extends State<Panel> {
                               ),
                             )
                           : Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
+                              padding: const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
                               child: IconButton(
                                 icon: Icon(
                                   Icons.keyboard_arrow_right_rounded,
@@ -401,18 +389,3 @@ class _PanelState extends State<Panel> {
     );
   }
 }
-
-// class _PanelController {
-//   _PanelState state;
-//   _ToDoController toDoCon;
-
-//   _PanelController(this.state, this.toDoCon);
-
-//   void toggleExpanded() => state.render(() {
-//         // toDoCon.state.render(() {
-//         //   toDoCon.state.userList = toDoCon.state.userList;
-//         // });
-//         toDoCon.toggleExpanded(state.item);
-//         // state.item.isToggled = !state.item.isToggled;
-//       });
-// }
