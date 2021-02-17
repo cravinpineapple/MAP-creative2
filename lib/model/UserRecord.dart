@@ -101,12 +101,14 @@ class UserRecord {
       lastName: 'Ackerman',
       email: '2@test.com',
       password: '222222',
+      toDoLists: [],
     ),
     UserRecord(
       firstName: 'Armin',
       lastName: 'Arlert',
       email: '3@test.com',
       password: '333333',
+      toDoLists: [],
     ),
   ];
 }
