@@ -38,8 +38,6 @@ class _ToDoState extends State<ToDoScreen> {
     userList ??= ModalRoute.of(context).settings.arguments;
     List builtHierarchy = con.buildListHierarchy(userList.children, 0);
 
-    print(userList);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('${userList.name}'),
