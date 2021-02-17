@@ -34,8 +34,7 @@ class ToDoList {
     // if adding to sub-root
     for (int i = 0; i < children.length; i++) {
       if (children[i].isFolder) {
-        children[i].addItem(
-            isFolder: isFolder, name: name, addID: addID, newID: idCount);
+        children[i].addItem(isFolder: isFolder, name: name, addID: addID, newID: idCount);
       }
     }
   }
@@ -59,7 +58,7 @@ class ToDoList {
 
   @override
   String toString() {
-    String str = '$name \n';
+    String str = '$name=======================\n';
 
     for (int i = 0; i < children.length; i++) {
       str += children[i].toListString(1) + '\n';
